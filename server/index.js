@@ -10,9 +10,9 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-const MONGODB_URI = 'mongodb+srv://fincaanaya:Basketismylife123@cluster0.1cad5ok.mongodb.net/weatherforecast?retryWrites=true&w=majority';
+require('dotenv').config();
 
-mongoose.connect(MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ MongoDB connected successfully'))
   .catch((err) => console.error('❌ MongoDB connection error:', err));
 
