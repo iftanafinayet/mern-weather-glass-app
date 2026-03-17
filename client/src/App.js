@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
+import logo from './assets/weather-logo.png';
 
 const apikey = "7deb5f7f30b94f3863cd8c914450404e";
 
@@ -61,24 +62,31 @@ function App() {
   };
 
   return (
-    <div>
-      <div className="header">
-        <h1>WEATHER APP</h1>
-        <div>
+    <div className="app-root">
+      <header className="header">
+        <div className="brand">
+          <img src={logo} alt="Weather app logo" className="brand-logo" />
+          <div className="brand-text">
+            <h1>Weather Pulse</h1>
+            <p className="brand-subtitle">Cek cuaca cepat dan ringan</p>
+          </div>
+        </div>
+
+        <div className="search-bar">
           <input
             type="text"
             id="input"
-            placeholder="Enter city name"
+            placeholder="Masukkan nama kota..."
             value={city}
             onChange={(e) => setCity(e.target.value)}
           />
           <button id="search" onClick={searchByCity}>
-            Search
+            Cari
           </button>
         </div>
-      </div>
+      </header>
 
-      <main>
+      <main className="layout">
         <div className="weather">
           <h2 id="city">
             {weatherData ? `${weatherData.name}, ${weatherData.sys.country}` : 'Loading...'}
@@ -99,7 +107,7 @@ function App() {
         </div>
         <div className="divider1"></div>
 
-        <div className="forecstH">
+        <section className="forecstH">
           <p className="cast-header">Upcoming forecast</p>
           <div className="templist">
             {forecastData && forecastData.list.slice(0, 5).map((item, index) => (
@@ -114,12 +122,12 @@ function App() {
               </div>
             ))}
           </div>
-        </div>
+        </section>
       </main>
 
-      <div className="forecstD">
+      <section className="forecstD">
         <div className="divider2"></div>
-        <p className="cast-header"> Next 4 days forecast</p>
+        <p className="cast-header">Next 4 days forecast</p>
         <div className="weekF">
           {forecastData && forecastData.list.filter((_, i) => i % 8 === 0).slice(1, 5).map((item, index) => (
             <div key={index} className="dayF">
@@ -129,7 +137,7 @@ function App() {
             </div>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 }
