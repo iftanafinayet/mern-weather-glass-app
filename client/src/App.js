@@ -9,17 +9,7 @@ function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [forecastData, setForecastData] = useState(null);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        // Gunakan HTTPS agar tidak diblokir Netlify
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}`;
-        fetchWeatherData(url);
-      });
-    }
-  }, []);
-
+  // Fungsi fetch didefinisikan di luar agar bisa dipanggil berkali-kali
   const fetchWeatherData = async (url) => {
     try {
       const response = await axios.get(url);
@@ -36,6 +26,18 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}`;
+        fetchWeatherData(url);
+      });
+    }
+    // Baris di bawah ini penting agar Netlify Build tidak error (exit code 2)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const searchByCity = () => {
     if (!city) return;
     const urlsearch = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}`;
@@ -45,7 +47,7 @@ function App() {
 
   const saveWeatherData = async (data) => {
     try {
-      // Endpoint disesuaikan untuk Netlify Functions (/api/...)
+      // Mengarah ke Netlify Function via proxy netlify.toml
       await axios.post('/api/weather', {
         city: data.name,
         country: data.sys.country,
