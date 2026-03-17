@@ -12,16 +12,16 @@ body {
 }
 
 .app-root {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 1.5rem 1.25rem 3rem;
+  padding: 1.5rem 1.5rem 3.5rem;
 }
 
 .layout {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
+  display: flex;
+  flex-direction: column;
   gap: 1.75rem;
-  align-items: flex-start;
+  margin-top: 1.75rem;
 }
 
 .header {
@@ -123,7 +123,8 @@ main {
   text-align: center;
   border: 1px solid rgba(10, 102, 194, 0.12);
   box-shadow: 0 18px 40px rgba(4, 70, 128, 0.08);
-  margin-bottom: 2rem;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 
@@ -172,6 +173,8 @@ main {
   padding: 1.75rem 1.5rem;
   border: 1px solid rgba(10, 102, 194, 0.12);
   box-shadow: 0 16px 32px rgba(15, 69, 119, 0.06);
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 .cast-header {
