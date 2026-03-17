@@ -1,22 +1,29 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const serverless = require('serverless-http');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
-require('dotenv').config();
+// Sinkronkan koneksi MongoDB (Optimasi Serverless)
+let isConnected = false;
+const connectDB = async () => {
+  if (isConnected) return;
+  try {
+    const db = await mongoose.connect(process.env.MONGODB_URI);
+    isConnected = db.connections[0].readyState;
+    console.log('✅ MongoDB Connected');
+  } catch (err) {
+    console.error('❌ MongoDB Error:', err);
+  }
+};
 
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ MongoDB connected successfully'))
-  .catch((err) => console.error('❌ MongoDB connection error:', err));
-
-// ⭐ MODEL DEFINITION - SEBELUM ROUTE ⭐
+// Model Definition
 const weatherSchema = new mongoose.Schema({
   city: { type: String, required: true },
   country: String,
@@ -28,32 +35,30 @@ const weatherSchema = new mongoose.Schema({
 
 const WeatherData = mongoose.model('WeatherData', weatherSchema);
 
-// ⭐ ROUTE - SETELAH MODEL ⭐
+// Route API
 app.post('/api/weather', async (req, res) => {
+  await connectDB(); // Pastikan koneksi DB nyala sebelum query
   try {
     const { city, country, temperature, description, icon } = req.body;
-    
-    const weatherData = new WeatherData({
-      city,
-      country,
-      temperature,
-      description,
-      icon
-    });
-    
+    const weatherData = new WeatherData({ city, country, temperature, description, icon });
     await weatherData.save();
-    
-    res.json({ 
+
+    res.json({
       message: 'Weather data saved successfully',
-      data: weatherData 
+      data: weatherData
     });
   } catch (error) {
-    console.error('Error saving weather data:', error);
+    console.error('Error saving:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-});
+// Netlify tidak butuh app.listen, tapi kita biarkan kondisional untuk local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = 5000;
+  app.listen(PORT, () => console.log(`🚀 Local server on port ${PORT}`));
+}
+
+// Export handler untuk Netlify
+module.exports = app;
+module.exports.handler = serverless(app);

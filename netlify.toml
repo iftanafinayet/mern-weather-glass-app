@@ -1,0 +1,16 @@
+[build]
+  # Perintah untuk install & build React di folder client
+  command = "cd client && npm install && npm run build"
+  # Folder hasil build React yang akan di-host
+  publish = "client/build"
+
+[functions]
+  # Beritahu Netlify di mana letak backend-nya
+  directory = "server"
+
+[[redirects]]
+  # Redirect semua request ke /api/* ke fungsi server kita
+  from = "/api/*"
+  status = 200
+  force = true
+  to = "/.netlify/functions/index/:splat"
