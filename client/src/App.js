@@ -86,7 +86,7 @@ function App() {
         </div>
       </header>
 
-      <main className="layout">
+      <main>
         <div className="weather">
           <h2 id="city">
             {weatherData ? `${weatherData.name}, ${weatherData.sys.country}` : 'Loading...'}
