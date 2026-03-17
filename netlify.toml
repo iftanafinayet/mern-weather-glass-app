@@ -1,6 +1,6 @@
 [build]
-  # Tambahkan CI= sebelum command
-  command = "cd client && npm install && CI=false npm run build"
+  # Perintah ini akan menginstall dependency di backend, lalu di frontend, baru kemudian build frontend
+  command = "cd server && npm install && cd ../client && npm install && CI=false npm run build"
   publish = "client/build"
 
 [functions]
